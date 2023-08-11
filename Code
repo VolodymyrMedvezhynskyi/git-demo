@@ -1,0 +1,41 @@
+from django.db import models
+
+class YourModel(models.Model):
+    FIRST_COLUMN_CHOICES = [
+        ('1', 'Option 1'),
+        ('2', 'Option 2'),
+    ]
+    
+    SECOND_COLUMN_CHOICES_1 = [
+        ('11', 'Option 11'),
+        ('12', 'Option 12'),
+        ('13', 'Option 13'),
+        ('14', 'Option 14'),
+    ]
+    
+    SECOND_COLUMN_CHOICES_2 = [
+        ('21', 'Option 21'),
+        ('22', 'Option 22'),
+        ('23', 'Option 23'),
+        ('24', 'Option 24'),
+    ]
+    
+    first_column = models.CharField(max_length=1, choices=FIRST_COLUMN_CHOICES)
+    
+    second_column = models.CharField(
+        max_length=2,
+        choices=SECOND_COLUMN_CHOICES_1,
+        blank=True,
+        null=True
+    )
+    
+    def save(self, *args, **kwargs):
+        # Automatically adjust second_column choices based on first_column value
+        if self.first_column == '1':
+            self.second_column = None
+        elif self.first_column == '2':
+            self.second_column = models.CharField(
+                max_length=2,
+                choices=SECOND_COLUMN_CHOICES_2
+            )
+        super().save(*args, **kwargs)
